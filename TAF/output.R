@@ -1,9 +1,2 @@
-# Extract results of interest, write CSV output tables
-
-# Before:
-# After:
-
-library(TAF)
-
-mkdir("output")
-
+source("output_fit.R")
+source("output_pop.R")
