@@ -24,7 +24,7 @@ fisheries$need_catch_mult <- NULL
 
 # Length comps
 length.comps <- comp2long(dat$lencomp)
-length.comps <- length.comps[length.comps$sex == "f",]
+length.comps <- length.comps[length.comps$sex == 1,]
 length.comps$month <- NULL
 length.comps$sex <- NULL
 length.comps$part <- NULL
