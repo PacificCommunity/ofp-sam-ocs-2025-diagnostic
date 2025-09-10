@@ -19,8 +19,10 @@ cpue$index <- NULL
 # Fisheries
 fisheries <- dat$fleetinfo
 fisheries <- fisheries[1:4,]  # purse seine CPUE not used
+fisheries$fleet <- 1:4
 fisheries$area <- NULL
 fisheries$need_catch_mult <- NULL
+fisheries <- fisheries[c("fleet", "fleetname", "type", "units", "surveytiming")]
 
 # Length comps
 length.comps <- comp2long(dat$lencomp)
