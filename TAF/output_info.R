@@ -1,8 +1,8 @@
 # Extract results of interest, write CSV output tables
 
 # Before: model.rds (model)
-# After:  biology.csv, catch.csv, likelihoods.csv, movement.csv,
-#         selectivity.csv, stats.csv (output)
+# After:  biology.csv, catch.csv, likelihoods.csv, selectivity.csv,
+#         stats.csv (output)
 
 library(TAF)
 library(r4ss)
@@ -10,11 +10,10 @@ library(r4ss)
 mkdir("output")
 
 # Read model results
-model <- readRDS("model/model.rds")
+model <- SS_output("model", verbose=FALSE, printstats=FALSE)
 catch <- model$catch
 endgrowth <- model$endgrowth
 likelihoods <- model$likelihoods_used
-movement <- model$movement
 sizeselex <- model$sizeselex
 
 # Biology
@@ -34,17 +33,13 @@ row.names(catch) <- NULL
 likelihoods <- likelihoods[likelihoods$values != 0,]
 likelihoods <- data.frame(t(likelihoods["values"]), row.names=NULL)
 
-# Movement
-movement <- movement[movement$Seas==1, c("Source_area", "Dest_area", "age0")]
-names(movement) <- c("Source", "Dest", "Rate")
-row.names(movement) <- NULL
-
 # Selectivity
 selectivity <- sizeselex[sizeselex$Factor == "Lsel",]
 selectivity <- selectivity[selectivity$Sex == 1,]
 selectivity <- selectivity[selectivity$Yr == model$endyr,]
 exclude <- c("Factor", "Yr", "Sex", "Label")
 selectivity <- selectivity[!names(selectivity) %in% exclude]
+selectivity <- selectivity[selectivity$Fleet %in% 1:4,]  # fleets 5 & 6 not used
 selectivity <- taf2long(selectivity, names=c("Fleet", "Length", "Sel"))
 
 # Stats
@@ -60,6 +55,5 @@ stats <- data.frame(npar, objfun, gradient, start, runtime, version)
 write.taf(biology, dir="output")
 write.taf(catch, dir="output")
 write.taf(likelihoods, dir="output")
-write.taf(movement, dir="output")
 write.taf(stats, dir="output", quote=TRUE)
 write.taf(selectivity, dir="output")
