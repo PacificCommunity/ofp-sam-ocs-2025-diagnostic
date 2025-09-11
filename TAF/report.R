@@ -1,9 +1,9 @@
 # Produce plots and tables for report
 
 # Before: biology.csv, likelihoods.csv, stats.csv, summary.csv (output)
-# After:  bbmsy.png, biology.csv, biomass.png, depletion.png, ffmsy.png,
-#         growth.png, fmort.png, likelihoods.csv, maturity.png, stats.csv,
-#         summary.csv, weight.png (report)
+# After:  bbmsy.png, biology.csv, biomass.png, catch.png, depletion.png,
+#         ffmsy.png, growth.png, fmort.png, likelihoods.csv, maturity.png,
+#         stats.csv, summary.csv, weight.png (report)
 
 library(TAF)
 
@@ -19,6 +19,9 @@ summary <- read.taf("output/summary.csv")
 taf.png("biomass")
 plot(SB~Year, summary, ylim=lim(SB), type="l", yaxs="i", lwd=2,
      ylab="SB (tonnes)")
+dev.off()
+taf.png("catch")
+barplot(Catch~Year, summary, ylab="Catch (tonnes)")
 dev.off()
 taf.png("fmort")
 plot(F~Year, summary, ylim=lim(F), type="l", yaxs="i", lwd=2,
@@ -40,17 +43,19 @@ dev.off()
 
 # Plot biology
 taf.png("growth")
-plot(Len~Age, biology, subset=Sex==1, ylim=lim(Len), type="l", yaxs="i", lwd=2)
+plot(Len~Age, biology, subset=Sex==1, ylim=lim(Len), type="l", yaxs="i", lwd=2,
+     xlab="Age (yr)", ylab="Length (cm)")
 dev.off()
 taf.png("weight")
 plot(Wt~Age, biology, subset=Sex==1, ylim=lim(Wt), type="l", yaxs="i", lwd=2,
-     col=2)
+     col=2, xlab="Age (yr)", ylab="Weight (kg)")
 lines(Wt~Age, biology, subset=Sex==2, ylim=lim(Wt), type="l", lwd=2, col=4)
 legend("topleft", c("Female","Male"), lwd=3, col=c(2,4), bty="n", inset=0.02,
        y.intersp=1.25)
 dev.off()
 taf.png("maturity")
-plot(Mat~Age, biology, subset=Sex==1, ylim=0:1, type="l", lwd=2)
+plot(Mat~Age, biology, subset=Sex==1, ylim=0:1, type="l", lwd=2,
+     xlab="Age (yr)", ylab="Proportion mature")
 dev.off()
 
 # Format tables
