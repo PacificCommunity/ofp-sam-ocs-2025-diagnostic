@@ -24,7 +24,7 @@ names(biology) <- sub("_F_Natage", "", names(biology))
 row.names(biology) <- NULL
 
 # Catch
-catch <- catch[c("Fleet", "Fleet_Name", "Area", "Yr", "Seas", "dead_bio")]
+catch <- catch[c("Fleet", "Fleet_Name", "Yr", "dead_bio")]
 catch <- catch[catch$Yr >= model$startyr,]
 names(catch)[names(catch) == "dead_bio"] <- "Catch"
 row.names(catch) <- NULL
