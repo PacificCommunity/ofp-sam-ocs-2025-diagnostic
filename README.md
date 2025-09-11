@@ -23,7 +23,7 @@ Finally, the diagnostic model is also the starting point for the the next OCS st
 
 ## Explore data, model settings, and results
 
-The [ss3](ss3) archive includes all the Stock Synthesis (SS3) input files and model settings.
+The [ss3](ss3) folder includes all the Stock Synthesis (SS3) input files and model settings.
 
 The **TAF** folder extracts the data and results from SS3 format to CSV format that can be examined using Excel, R, or other statistical software. [TAF](https://cran.r-project.org/package=TAF) is a standard reproducible format for stock assessments that is practical for making the SS3 **[data](TAF/data)** and **[output](TAF/output)** tables available in a format that is easy to examine. The **[report](TAF/report)** folder contains formatted tables and example plots.
 
