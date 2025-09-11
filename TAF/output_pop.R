@@ -1,62 +1,77 @@
-# Extract results of interest, write CSV output tables
+# Extract population results, write CSV output tables
 
-# After:  CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
-#         warning.sso, wtatage.ss_new (model)
-# After:  refpts.csv, summary.csv (output)
+# Before: model.rds (model)
+# After:  batage.csv, fatage.csv, natage.csv, stock_area.csv,
+#         summary.csv (output)
 
 library(TAF)
-library(r4ss)
 
 mkdir("output")
 
 # Read model results
-model <- SS_output("model", verbose=FALSE, printstats=FALSE)
-biology <- model$biology
+model <- readRDS("model/model.rds")
+annual <- model$annual_time_series
+batage <- model$batage[model$batage$Era == "TIME",]
 derived <- model$derived_quants
 dynamic <- model$Dynamic_Bzero[model$Dynamic_Bzero$Era == "TIME",]
-exploitation <- model$exploitation[model$exploitation$Yr %in% 1995:2023,]
-Natural_Mortality <- model$Natural_Mortality
-recruit <- model$recruit[model$recruit$era == "Main",]
+m.area <- model$M_by_area
+natage <- model$natage[model$natage$Era == "TIME",]
 timeseries <- model$timeseries[model$timeseries$Era == "TIME",]
+z.area <- model$Z_by_area
 
-# Biology
-biology <- biology[c("Len_mean", "Wt_F", "Wt_M", "Mat")]
-Natural_Mortality
+# B at age
+batage <- batage[batage$Seas == 1,]
+batage <- batage[batage$"Beg/Mid" == "B",]
+batage <- batage[batage$BirthSeas == 1,]
+batage <- batage[c("Area", "Sex", "Yr", grepv("[0-9]", names(batage)))]
+batage <- wide2long(batage, names=c("Age", "B"))
 
-# Recruitment
-Rec <- timeseries$Recruit_0
-RecDev <- recruit$dev
+# F at age
+exclude <- c("Bio_Pattern", "BirthSeas", "Settlement", "Platoon", "Morph",
+             "Time", "Beg/Mid", "Era")
+m.area <- m.area[m.area$Era == "TIME" & m.area$BirthSeas == 1,]
+m.area <- m.area[!names(m.area) %in% exclude]
+z.area <- z.area[z.area$Era == "TIME" & z.area$BirthSeas == 1,]
+z.area <- z.area[!names(z.area) %in% exclude]
+m.area <- wide2long(m.area)
+z.area <- wide2long(z.area)
+m.area <- aggregate(Value~Area+Sex+Yr+Age, m.area, mean)
+z.area <- aggregate(Value~Area+Sex+Yr+Age, z.area, mean)
+fatage <- z.area
+fatage$Value <- z.area$Value - m.area$Value
+names(fatage)[names(fatage) == "Value"] <- "F"
 
-# Biomass
-TotalB <- timeseries$Bio_all
-SB <- timeseries$SpawnBio
-SB0 <- model$SBzero
-SBF0 <- dynamic$SSB_nofishing
-SBmsy <- derived$Value[derived$Label == "SSB_MSY"]
-SB_SB0 <- SB / SB0
-SB_SBF0 <- SB / SBF0
-SB_SBmsy <- SB / SBmsy
+# N at age
+natage <- natage[natage$Seas == 1,]
+natage <- natage[natage$"Beg/Mid" == "B",]
+natage <- natage[natage$BirthSeas == 1,]
+natage <- natage[c("Area", "Sex", "Yr", grepv("[0-9]", names(natage)))]
+natage <- wide2long(natage, names=c("Age", "N"))
 
-# Fishing mortality
-Fmort <- exploitation$annual_F
-Fmsy <- derived$Value[derived$Label == "annF_MSY"]
-F_Fmsy <- Fmort / Fmsy
-
-# Catch
-catch <- model$catch
-catch <- catch[catch$Yr %in% 1995:2023,]
-catch <- catch[c("Fleet", "Fleet_Name", "Yr", "dead_bio", "dead_num")]
-Catch <- aggregate(dead_bio~Yr, catch, sum)$dead_bio
-CatchNum <- aggregate(dead_num~Yr, catch, sum)$dead_num
+# Stock by area
+stock.area <- timeseries[timeseries$Seas == 1,]
+names(stock.area)[names(stock.area) == "Recruit_0"] <- "Rec"
+names(stock.area)[names(stock.area) == "Bio_all"] <- "TB"
+names(stock.area)[names(stock.area) == "SpawnBio"] <- "SB"
+stock.area <- stock.area[c("Area", "Yr", "Rec", "TB", "SB")]
+row.names(stock.area) <- NULL
 
 # Summary
-Year <- timeseries$Yr
-summary <- data.frame(Year, Rec, RecDev, TotalB, SB, F=Fmort, Catch, CatchNum,
-                      SBF0, SB_SB0, SB_SBF0, SB_SBmsy, F_Fmsy)
-
-# Refpts
-refpts <- data.frame(SB0, SBmsy, Fmsy)
+Year <- annual$year
+Rec <- annual$recruits
+Catch <- annual$dead_catch_B_an
+TB <- annual$Bio_all_an
+SB <- annual$SSB
+Fmort <- annual$"F=Z-M"
+SB_SBmsy <- SB / derived$Value[derived$Label == "SSB_MSY"]
+SB_SBF0 <- SB / dynamic$SSB_nofishing
+F_Fmsy <- Fmort / derived$Value[derived$Label == "annF_MSY"]
+summary <- data.frame(Year, Rec, Catch, TB, SB, F=Fmort, SB_SBmsy, SB_SBF0,
+                      F_Fmsy)
 
 # Write tables
-write.taf(refpts, dir="output")
+write.taf(batage, dir="output")
+write.taf(fatage, dir="output")
+write.taf(natage, dir="output")
+write.taf(stock.area, dir="output")
 write.taf(summary, dir="output")
