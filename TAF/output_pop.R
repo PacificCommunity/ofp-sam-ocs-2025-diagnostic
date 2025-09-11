@@ -1,6 +1,7 @@
 # Extract population results, write CSV output tables
 
-# Before: model.rds (model)
+# Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
+#         warning.sso, wtatage.ss_new (model)
 # After:  batage.csv, fatage.csv, natage.csv, summary.csv (output)
 
 library(TAF)

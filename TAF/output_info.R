@@ -1,6 +1,7 @@
 # Extract results of interest, write CSV output tables
 
-# Before: model.rds (model)
+# Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
+#         warning.sso, wtatage.ss_new (model)
 # After:  biology.csv, catch.csv, likelihoods.csv, selectivity.csv,
 #         stats.csv (output)
 

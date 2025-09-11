@@ -1,6 +1,6 @@
 # Extract results of interest, write CSV output tables
 
-# After:  CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
+# Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
 #         warning.sso, wtatage.ss_new (model)
 # After:  cpue.csv, length_comps.csv (output)
 
