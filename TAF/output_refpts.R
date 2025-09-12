@@ -13,6 +13,7 @@ mkdir("output")
 model <- SS_output("model", verbose=FALSE, printstats=FALSE)
 derived <- model$derived_quants
 endgrowth <- model$endgrowth
+parameters <- model$parameters
 sprseries <- model$sprseries
 timeseries <- model$timeseries
 
@@ -35,14 +36,15 @@ SBlatest_SBmsy <- SBlatest / SBmsy
 SBrecent_SB0 <- SBrecent / SB0
 SBrecent_SBmsy <- SBrecent / SBmsy
 Finit <- sprseries$"F=Z-M"[sprseries$Yr == model$startyr]
-R0 <- log(derived$Value[derived$Label == "Recr_Virgin"])
-M <- model$endgrowth$M[1]
+lnR0 <- parameters$Value[parameters$Label == "SR_LN(R0)"]
+M <- parameters$Value[parameters$Label == "NatM_uniform_Fem_GP_1"]
+zfrac <- parameters$Value[parameters$Label == "SR_surv_zfrac"]
 
 # Construct reference point table
 refpts <- data.frame(Clatest, Flatest, Fmsy, Frecent, MSY, SB0, SBlatest, SBmsy,
                      SBrecent, TBlatest, TBrecent, Flatest_Fmsy, Frecent_Fmsy,
                      SBlatest_SB0, SBlatest_SBmsy, SBrecent_SB0, SBrecent_SBmsy,
-                     Finit, R0, M)
+                     Finit, lnR0, M, zfrac)
 refpts <- data.frame(Metric=names(refpts), Value=unlist(refpts), row.names=NULL)
 
 # Write table
