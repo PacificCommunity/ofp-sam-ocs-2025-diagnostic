@@ -9,9 +9,9 @@ Download OCS 2025 diagnostic model:
 
 - Clone the **[ocs-2025-diagnostic](https://github.com/PacificCommunity/ofp-sam-ocs-2025-diagnostic)** repository or download as **[main.zip](https://github.com/PacificCommunity/ofp-sam-ocs-2025-diagnostic/archive/refs/heads/main.zip)** file
 
-Download OCS 2025 MCMC analysis:
+Download OCS 2025 ensemble results:
 
-- Clone the **[ocs-2025-mcmc](https://github.com/PacificCommunity/ofp-sam-ocs-2025-mcmc)** repository or download as **[main.zip](https://github.com/PacificCommunity/ofp-sam-ocs-2025-mcmc/archive/refs/heads/main.zip)** file
+- Clone the **[ocs-2025-ensemble](https://github.com/PacificCommunity/ofp-sam-ocs-2025-ensemble)** repository or download as **[main.zip](https://github.com/PacificCommunity/ofp-sam-ocs-2025-ensemble/archive/refs/heads/main.zip)** file
 
 ## Reference model
 
