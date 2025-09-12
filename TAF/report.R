@@ -3,7 +3,7 @@
 # Before: biology.csv, likelihoods.csv, stats.csv, summary.csv (output)
 # After:  bbmsy.png, biology.csv, biomass.png, catch.png, depletion.png,
 #         ffmsy.png, growth.png, fmort.png, likelihoods.csv, maturity.png,
-#         stats.csv, summary.csv, weight.png (report)
+#         recruitment.png, stats.csv, summary.csv, weight.png (report)
 
 library(TAF)
 
@@ -23,13 +23,16 @@ dev.off()
 taf.png("catch")
 barplot(Catch~Year, summary, ylab="Catch (tonnes)")
 dev.off()
+taf.png("depletion")
+plot(SB_SB0~Year, summary, ylim=lim(SB_SB0), type="l", yaxs="i", lwd=2,
+     ylab="SB/SB0")
+dev.off()
 taf.png("fmort")
 plot(F~Year, summary, ylim=lim(F), type="l", yaxs="i", lwd=2,
      ylab="Fishing mortality")
 dev.off()
-taf.png("depletion")
-plot(SB_SB0~Year, summary, ylim=lim(SB_SB0), type="l", yaxs="i", lwd=2,
-     ylab="SB/SB0")
+taf.png("recruitment")
+barplot(Rec~Year, summary, ylab="Age-0 recruits (thousand)")
 dev.off()
 taf.png("bbmsy")
 plot(SB_SBmsy~Year, summary, ylim=lim(SB_SBmsy), type="l", yaxs="i", lwd=2,
