@@ -48,4 +48,4 @@ taf.boot()
 source.all()
 ```
 
-This runs the assessment model and also extracts the data and output from the SS3 files and makes them available as CSV files, which can be examined and analyzed further.
+This runs the assessment model and also extracts the data and output from the SS3 files and makes the results available as CSV files, which can be examined and analyzed further.
