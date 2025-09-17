@@ -69,6 +69,9 @@ likelihoods <- rnd(likelihoods, "value", 3)
 stats <- data.frame(info=names(stats), value=unlist(stats), row.names=NULL)
 summary <- rnd(summary, c("Rec", "Catch", "TB", "SB"))
 summary <- rnd(summary, c("F", "SB_SB0", "SB_SBmsy", "F_Fmsy"), 2)
+biology <- format(biology)          # retain trailing zeros
+likelihoods <- format(likelihoods)  # retain trailing zeros
+summary <- format(summary)          # retain trailing zeros
 
 # Write tables
 write.taf(biology, dir="report")
