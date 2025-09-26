@@ -14,19 +14,21 @@ mkdir("output")
 model <- SS_output("model", verbose=FALSE, printstats=FALSE)
 batage.detail <- model$batage[model$batage$Era == "TIME",]
 derived <- model$derived_quants
+m.age <- model$M_at_age
 m.area <- model$M_by_area[model$M_by_area$Era == "TIME",]
 natage.detail <- model$natage[model$natage$Era == "TIME",]
 sprseries <- model$sprseries[model$sprseries$Yr <= model$endyr,]
 timeseries <- model$timeseries[model$timeseries$Era == "TIME",]
+z.age <- model$Z_at_age
 z.area <- model$Z_by_area[model$Z_by_area$Era == "TIME",]
 
-# B at age
+# B at age (detail)
 batage.detail <- batage.detail[batage.detail$"Beg/Mid" == "B",]
 batage.detail <- batage.detail[c("Sex", "Yr",
                                  grepv("[0-9]", names(batage.detail)))]
 batage.detail <- wide2long(batage.detail, names=c("Age", "B"))
 
-# F at age
+# F at age (detail)
 exclude <- c("Area", "Bio_Pattern", "BirthSeas", "Settlement", "Platoon",
              "Morph", "Time", "Beg/Mid", "Era")
 m.area <- m.area[!names(m.area) %in% exclude]
@@ -39,7 +41,9 @@ fatage.detail <- z.area
 fatage.detail$Value <- z.area$Value - m.area$Value
 names(fatage.detail)[names(fatage.detail) == "Value"] <- "F"
 
-# N at age
+# F at age
+
+# N at age (detail)
 natage.detail <- natage.detail[natage.detail$"Beg/Mid" == "B",]
 natage.detail <- natage.detail[c("Sex", "Yr",
                                  grepv("[0-9]", names(natage.detail)))]
