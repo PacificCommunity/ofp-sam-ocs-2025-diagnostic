@@ -1,6 +1,6 @@
 # Extract population results, write CSV output tables
 
-# Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
+# Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso, ss3.par,
 #         warning.sso, wtatage.ss_new (model)
 # After:  biomass.csv, fishmort.csv, natage.csv, summary.csv (output)
 
