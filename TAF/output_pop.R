@@ -2,8 +2,7 @@
 
 # Before: CompReport.sso, covar.sso, Forecast-report.sso, Report.sso,
 #         warning.sso, wtatage.ss_new (model)
-# After:  batage_detail.csv, fatage_detail.csv, natage_detail.csv,
-#         summary.csv (output)
+# After:  biomass.csv, fishmort.csv, natage.csv, summary.csv (output)
 
 library(TAF)
 library(r4ss)
@@ -12,23 +11,22 @@ mkdir("output")
 
 # Read model results
 model <- SS_output("model", verbose=FALSE, printstats=FALSE)
-batage.detail <- model$batage[model$batage$Era == "TIME",]
+batage <- model$batage[model$batage$Era == "TIME",]
 derived <- model$derived_quants
 m.age <- model$M_at_age
 m.area <- model$M_by_area[model$M_by_area$Era == "TIME",]
-natage.detail <- model$natage[model$natage$Era == "TIME",]
+natage <- model$natage[model$natage$Era == "TIME",]
 sprseries <- model$sprseries[model$sprseries$Yr <= model$endyr,]
 timeseries <- model$timeseries[model$timeseries$Era == "TIME",]
 z.age <- model$Z_at_age
 z.area <- model$Z_by_area[model$Z_by_area$Era == "TIME",]
 
-# B at age (detail)
-batage.detail <- batage.detail[batage.detail$"Beg/Mid" == "B",]
-batage.detail <- batage.detail[c("Sex", "Yr",
-                                 grepv("[0-9]", names(batage.detail)))]
-batage.detail <- wide2long(batage.detail, names=c("Age", "B"))
+# Biomass
+biomass <- batage[batage$"Beg/Mid" == "B",]
+biomass <- biomass[c("Sex", "Yr", grepv("[0-9]", names(biomass)))]
+biomass <- wide2long(biomass, names=c("Age", "B"))
 
-# F at age (detail)
+# Fishing mortality
 exclude <- c("Area", "Bio_Pattern", "BirthSeas", "Settlement", "Platoon",
              "Morph", "Time", "Beg/Mid", "Era")
 m.area <- m.area[!names(m.area) %in% exclude]
@@ -37,17 +35,14 @@ m.area <- wide2long(m.area)
 z.area <- wide2long(z.area)
 m.area <- aggregate(Value~Sex+Yr+Age, m.area, mean)
 z.area <- aggregate(Value~Sex+Yr+Age, z.area, mean)
-fatage.detail <- z.area
-fatage.detail$Value <- z.area$Value - m.area$Value
-names(fatage.detail)[names(fatage.detail) == "Value"] <- "F"
+fishmort <- z.area
+fishmort$Value <- z.area$Value - m.area$Value
+names(fishmort)[names(fishmort) == "Value"] <- "F"
 
-# F at age
-
-# N at age (detail)
-natage.detail <- natage.detail[natage.detail$"Beg/Mid" == "B",]
-natage.detail <- natage.detail[c("Sex", "Yr",
-                                 grepv("[0-9]", names(natage.detail)))]
-natage.detail <- wide2long(natage.detail, names=c("Age", "N"))
+# N at age
+natage <- natage[natage$"Beg/Mid" == "B",]
+natage <- natage[c("Sex", "Yr", grepv("[0-9]", names(natage)))]
+natage <- wide2long(natage, names=c("Age", "N"))
 
 # Summary
 Year <- timeseries$Yr
@@ -63,7 +58,7 @@ summary <- data.frame(Year, Rec, Catch, TB, SB, F=Fmort, SB_SB0, SB_SBmsy,
                       F_Fmsy)
 
 # Write tables
-write.taf(batage.detail, dir="output")
-write.taf(fatage.detail, dir="output")
-write.taf(natage.detail, dir="output")
+write.taf(biomass, dir="output")
+write.taf(fishmort, dir="output")
+write.taf(natage, dir="output")
 write.taf(summary, dir="output")
